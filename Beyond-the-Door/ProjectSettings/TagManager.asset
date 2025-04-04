@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Walpaper
+    uniqueID: 2593951831
+    locked: 0
+  - name: 'Background '
+    uniqueID: 230593209
+    locked: 0
+  - name: Floor Items
+    uniqueID: 3400915197
+    locked: 0
+  - name: Player
+    uniqueID: 1415927181
+    locked: 0

@@ -6,6 +6,12 @@ public class EnemyAI : MonoBehaviour
     public float detectionRange = 5f;
     public int health = 3;
 
+    [Header("Shooting")]
+    public GameObject projectilePrefab;
+    public Transform firePoint;
+    public float shootCooldown = 2f;
+    private float shootTimer;
+
     private Transform player;
     private Rigidbody2D rb;
     public RoomManager roomManager;
@@ -14,14 +20,50 @@ public class EnemyAI : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         rb = GetComponent<Rigidbody2D>();
+        shootTimer = shootCooldown;
     }
 
     void Update()
     {
-        if (Vector2.Distance(transform.position, player.position) < detectionRange)
+        if (player == null) return;
+
+        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+
+        if (distanceToPlayer < detectionRange)
         {
+            // Move toward player
             Vector2 direction = (player.position - transform.position).normalized;
             rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
+
+            // Shooting logic
+            shootTimer -= Time.deltaTime;
+            if (shootTimer <= 0f)
+            {
+                ShootAtPlayer();
+                shootTimer = shootCooldown;
+            }
+        }
+    }
+
+    void ShootAtPlayer()
+    {
+        if (projectilePrefab != null && firePoint != null)
+        {
+            Vector2 direction = (player.position - firePoint.position);
+            if (direction.magnitude < 0.1f)
+            {
+                direction = Vector2.right; // fallback
+            }
+
+            GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+            Projectile projScript = projectile.GetComponent<Projectile>();
+            if (projScript != null)
+            {
+                projScript.SetDirection(direction);
+            }
+
+            // Optional: draw debug line
+            Debug.DrawRay(firePoint.position, direction.normalized * 2f, Color.red, 1f);
         }
     }
 
@@ -31,16 +73,12 @@ public class EnemyAI : MonoBehaviour
 
         if (health <= 0)
         {
-            if (roomManager == null)
+            if (roomManager != null)
             {
-                Debug.LogError("roomManager is null on: " + gameObject.name);
-            }
-            else
-            {
-                roomManager.EnemyDefeated(); // Notify the room manager that an enemy was defeated
+                roomManager.EnemyDefeated();
             }
 
-            Destroy(gameObject); // Destroy the enemy object
+            Destroy(gameObject);
         }
     }
 }

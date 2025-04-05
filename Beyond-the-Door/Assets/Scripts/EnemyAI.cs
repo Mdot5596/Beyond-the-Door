@@ -8,8 +8,7 @@ public class EnemyAI : MonoBehaviour
 
     private Transform player;
     private Rigidbody2D rb;
-public RoomManager roomManager;
-
+    public RoomManager roomManager;
 
     void Start()
     {
@@ -33,16 +32,15 @@ public RoomManager roomManager;
         if (health <= 0)
         {
             if (roomManager == null)
-{
-    Debug.LogError("roomManager is null on: " + gameObject.name);
-}
-else
-{
-    roomManager.EnemyDefeated();
-}
+            {
+                Debug.LogError("roomManager is null on: " + gameObject.name);
+            }
+            else
+            {
+                roomManager.EnemyDefeated(); // Notify the room manager that an enemy was defeated
+            }
 
-            roomManager.EnemyDefeated(); // Notify the right room
-            Destroy(gameObject);
+            Destroy(gameObject); // Destroy the enemy object
         }
     }
 }

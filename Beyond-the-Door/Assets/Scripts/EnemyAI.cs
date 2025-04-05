@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class EnemyAI : MonoBehaviour
 {
     public float moveSpeed = 3f;
     public float detectionRange = 5f;
@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
 
     private Transform player;
     private Rigidbody2D rb;
+public RoomManager roomManager;
+
 
     void Start()
     {
@@ -30,8 +32,17 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {
+            if (roomManager == null)
+{
+    Debug.LogError("roomManager is null on: " + gameObject.name);
+}
+else
+{
+    roomManager.EnemyDefeated();
+}
+
+            roomManager.EnemyDefeated(); // Notify the right room
             Destroy(gameObject);
-            FindObjectOfType<RoomManager>().EnemyDefeated();
         }
     }
 }

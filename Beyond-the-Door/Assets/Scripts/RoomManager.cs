@@ -2,9 +2,21 @@ using UnityEngine;
 
 public class RoomManager : MonoBehaviour
 {
-    public int enemiesInRoom = 3; // Set this manually or auto-count
     public GameObject keyPrefab;
     public Transform keySpawnPoint;
+    private int enemiesInRoom;
+
+    void Start()
+    {
+        // Only get enemies that are children of this room (to avoid grabbing global ones)
+        EnemyAI[] enemies = GetComponentsInChildren<EnemyAI>();
+        enemiesInRoom = enemies.Length;
+
+        foreach (EnemyAI enemy in enemies)
+        {
+            enemy.roomManager = this; // Tell each enemy who their manager is
+        }
+    }
 
     public void EnemyDefeated()
     {

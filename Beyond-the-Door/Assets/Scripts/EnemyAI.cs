@@ -49,21 +49,22 @@ public class EnemyAI : MonoBehaviour
     {
         if (projectilePrefab != null && firePoint != null)
         {
-            Vector2 direction = (player.position - firePoint.position);
-            if (direction.magnitude < 0.1f)
-            {
+            // Calculate direction to player from firePoint in world space
+            Vector2 direction = (player.position - firePoint.position).normalized;
+
+            if (direction == Vector2.zero)
                 direction = Vector2.right; // fallback
-            }
 
             GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
             Projectile projScript = projectile.GetComponent<Projectile>();
+
             if (projScript != null)
             {
                 projScript.SetDirection(direction);
             }
 
-            // Optional: draw debug line
-            Debug.DrawRay(firePoint.position, direction.normalized * 2f, Color.red, 1f);
+            // Debug draw line
+            Debug.DrawRay(firePoint.position, direction * 2f, Color.red, 1f);
         }
     }
 
